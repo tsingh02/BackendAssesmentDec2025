@@ -1,0 +1,9 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 1
+      author: admin
+
+  - include:
+      file: V1.0.0.0/db.changelog.yaml
+      relativeToChangelogFile: true
