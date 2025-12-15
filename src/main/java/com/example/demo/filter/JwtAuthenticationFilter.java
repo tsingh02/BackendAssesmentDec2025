@@ -54,7 +54,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            final String token = authHeader.substring(7);
+            String token = "";
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            }
+
             final String username = jwtUtil.extractUsername(token);
 
             // Prevent re-authentication

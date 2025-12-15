@@ -1,87 +1,139 @@
 # 🛒 E-Commerce Application
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Setup Instructions](#setup-instructions)
-- [Database Migrations](#database-migrations)
-- [Configuration](#configuration)
-- [API Endpoints](#api-endpoints)
-    - [Authentication](#authentication)
-    - [Products](#products)
-    - [Orders](#orders)
-- [Discount Rules](#discount-rules)
-- [Pagination & Sorting](#pagination--sorting)
-- [Error Handling](#error-handling)
-- [Testing](#testing)
-- [Swagger Documentation](#swagger-documentation)
-- [Docker Setup](#docker-setup)
-- [Logging & Actuator](#logging--actuator)
+## 📌 Overview
+This is a **Spring Boot 3** based e-commerce application designed to manage **products, users, and orders** with a strong focus on **security, clean architecture, and scalability**.
 
----
-
-## Overview
-This is a **Spring Boot 3** e-commerce application for managing **products, users, and orders**, featuring:
-
+The application features:
 - JWT-based authentication
 - Role-based access control
-- Dynamic discount computation based on user type and order amount
-- Pagination, filtering, caching support
+- Dynamic discount computation
 - Production-ready exception handling and logging
+- Testing with JUnit 5 and Mockito
 
 ---
 
-## Features
+## 🚀 Features
 
-### Product Management
-- CRUD with soft-delete 
-- Search/filter by name, price range, and availability
-- Timestamps (`createdAt`, `updatedAt`)
-
-### User Management
-- Roles: `USER`, `PREMIUM_USER`, `ADMIN`
-- JWT authentication
-- Role-based access control
-
-### Order Management
-- Place orders with multiple products (Only allowed for users with Roles:`USER`, `PREMIUM_USER` )
-- Validate stock; reject if insufficient
-- Apply dynamic discounts
-- Update inventory on successful order
-
-### Bonus Features
-- Global exception handling via `@ControllerAdvice`
-- Logging with SLF4J
-- Spring Boot Actuator endpoints
+### 📦 Product Management
+- Full CRUD operations with **soft delete**
+- Search and filter by:
+    - Name
+    - Price range
+    - Availability
+- Automatic timestamps:
+    - `createdAt`
+    - `updatedAt`
 
 ---
 
-## Technology Stack
-- Java 17+
-- Spring Boot 3.2+
-- Spring Web, Spring Data JPA, Spring Security
-- H2 
-- Liquibase for database migrations
-- JWT Authentication
-- Springdoc OpenAPI (Swagger UI)
-- Lombok
-- JUnit 5 & Mockito for testing
+### 👤 User Management
+- Supported roles:
+    - `USER`
+    - `PREMIUM_USER`
+    - `ADMIN`
+- Secure **JWT authentication**
+- Role-based authorization:
+    - `ADMIN`: Full product management
+    - `USER` / `PREMIUM_USER`: View products & place orders
 
 ---
 
-## Setup Instructions
+### 🛒 Order Management
+- Place orders containing **multiple products**
+- Order validation:
+    - Rejects orders with insufficient stock
+- Automatic inventory updates after successful orders
+- **Dynamic discount computation**:
+    - `USER`: No discount
+    - `PREMIUM_USER`: 10% discount
+    - Orders above `$500`: Additional 5% discount
+- Discounts implemented using a **Strategy Design Pattern**
 
-### 1. Clone Repository
+---
+
+### ⭐ Bonus Features
+- Global exception handling using `@ControllerAdvice`
+- Centralized logging with **SLF4J**
+- Spring Boot **Actuator** endpoints
+- Pagination and filtering support
+- OpenAPI / Swagger documentation
+
+---
+
+## 🧰 Technology Stack
+
+| Category | Technology |
+|--------|-----------|
+| Language | Java 17+ |
+| Framework | Spring Boot 3.2+ |
+| Web | Spring Web |
+| Persistence | Spring Data JPA |
+| Security | Spring Security + JWT |
+| Database | H2 |
+| Migrations | Liquibase |
+| API Docs | Springdoc OpenAPI (Swagger UI) |
+| Utilities | Lombok |
+| Testing | JUnit 5, Mockito |
+
+---
+
+## 📚 API Endpoints
+
+### 🔐 Authentication (`auth-controller`)
+| Method | Endpoint | Description |
+|------|---------|------------|
+| POST | `/auth/login` | Authenticate user and get JWT |
+| POST | `/auth/createUser` | Register a new user |
+| GET | `/auth/getUsers` | Get all users (ADMIN only) |
+
+---
+
+### 📦 Products (`product-controller`)
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/products/{id}` | Get product by ID |
+| GET | `/api/products` | Search & filter products |
+| POST | `/api/products/create` | Create a product |
+| PUT | `/api/products/{id}` | Update product |
+| DELETE | `/api/products/{id}` | Delete product |
+
+---
+
+### 🛒 Orders (`order-controller`)
+| Method | Endpoint | Description |
+|------|---------|------------|
+| POST | `/api/orders/create` | Place an order |
+| GET | `/api/orders` | Get current user orders |
+| GET | `/api/orders/{id}` | Get order by ID |
+
+---
+
+## 🛠 Setup Instructions
+
+
+### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/tsingh/ecommerce-app.git
+git clone https://github.com/tsingh02/BackendAssesmentDec2025
 cd ecommerce-app
 
-### 2. Build Project
-mvn clean install -Dskiptests
-run as springboot applicaiton
+2️⃣ Build the Project
+mvn clean install -DskipTests
 
-### 3. download the postman collection from src/main/resources/postmanCollection direcotry
-### 4. Create User via /auth/createUser endpoint
-### 5. Authenticate User via /auth/login endpoint to get JWT token
-### 6. Use JWT token as bearer token to access secured endpoints
+3️⃣ Run the Application
+Run as a Spring Boot Application from your IDE
+or using Maven:
+mvn spring-boot:run
+
+4️⃣ Swagger UI
+Access API documentation at:
+http://localhost:8080/swagger-ui/index.html
+
+5️⃣ Postman Collection
+A ready-to-use Postman collection is available at:
+src/main/resources/postmanCollection
+
+6️⃣ Authentication Flow
+Create a user using /auth/createUser
+Authenticate using /auth/login
+Copy the JWT token
+Use the token as a Bearer Token for secured endpoints

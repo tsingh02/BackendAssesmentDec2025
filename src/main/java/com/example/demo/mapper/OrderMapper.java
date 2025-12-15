@@ -6,34 +6,28 @@ import com.example.demo.persistence.entity.Order;
 import com.example.demo.persistence.entity.OrderItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface OrderMapper {
 
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "items", target = "items")
-    OrderResponse toDto(Order order);
+    OrderResponse toOrderResponse(Order order);
 
-    List<OrderResponse> toDtoList(List<Order> orders);
+    List<OrderResponse> toOrderResponseList(List<Order> orders);
 
-    default OrderItemResponse toOrderItemDto(OrderItem item) {
-        if (item == null) return null;
-        OrderItemResponse dto = new OrderItemResponse();
-        dto.setProductId(item.getProduct().getId());
-        dto.setProductName(item.getProduct().getName());
-        dto.setQuantity(item.getQuantity());
-        dto.setUnitPrice(item.getUnitPrice());
-        dto.setDiscountApplied(item.getDiscountApplied());
-        dto.setTotalPrice(BigDecimal.valueOf(item.getTotalPrice()));
-        return dto;
-    }
+    OrderItemResponse toOrderItemResponse(OrderItem item);
 
-    default List<OrderItemResponse> mapItems(List<OrderItem> items) {
-        return items.stream().map(this::toOrderItemDto).collect(Collectors.toList());
+    List<OrderItemResponse> toOrderItemResponseList(List<OrderItem> items);
+
+    // BigDecimal → Double conversion
+    default Double map(BigDecimal value) {
+        return value != null ? value.doubleValue() : null;
     }
 }

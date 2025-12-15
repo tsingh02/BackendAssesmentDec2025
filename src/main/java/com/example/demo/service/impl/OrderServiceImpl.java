@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
         order = orderRepository.save(order);
 
         log.info("Order placed successfully with id: {}", order.getId());
-        return orderMapper.toDto(order);
+        return orderMapper.toOrderResponse(order);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Access denied to order: " + id);
         }
 
-        return orderMapper.toDto(order);
+        return orderMapper.toOrderResponse(order);
     }
 
     @Override
@@ -104,6 +104,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             orders = orderRepository.findByUserId(user.getId());
         }
-        return orders.stream().map(orderMapper::toDto).collect(Collectors.toList());
+        return orders.stream().map(orderMapper::toOrderResponse).collect(Collectors.toList());
     }
 }
