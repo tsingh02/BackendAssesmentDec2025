@@ -39,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private DiscountCalculator discountCalculator;
 
     @Override
+    @Transactional
     public OrderResponse placeOrder(OrderRequest request) {
         User user = userService.getCurrentUser();
 
